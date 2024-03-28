@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673511608213",
+    "project_id": "kullanicikayit-giris",
+    "storage_bucket": "kullanicikayit-giris.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673511608213:android:2d32b6e08e0d35d531b09c",
+        "android_client_info": {
+          "package_name": "kullaniciKayit.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAvNQsYGXFCvV1WqugkB5SRMQNC9Mi_es"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
