@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
-class IzlemeListesi extends StatelessWidget {
+
+class IzlemeListesi extends StatefulWidget {
+  @override
+  _IzlemeListesiState createState() => _IzlemeListesiState();
+}
+
+class _IzlemeListesiState extends State<IzlemeListesi> {
+  List<String> izlemeListesi = [];
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('İzleme Listesi'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('İzleme Listem'),
+      ),
+      body: ListView.builder(
+        itemCount: izlemeListesi.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(izlemeListem[index]),
+          );
+        },
+      ),
     );
   }
 }
