@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class KayitSayfasi extends StatelessWidget {
+class RegistrationScreen extends StatelessWidget {
+  final _auth = FirebaseAuth.instance;
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +27,7 @@ class KayitSayfasi extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextField(
+              controller: _usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
                 border: OutlineInputBorder(),
@@ -28,6 +35,7 @@ class KayitSayfasi extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -35,6 +43,7 @@ class KayitSayfasi extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
@@ -44,8 +53,24 @@ class KayitSayfasi extends StatelessWidget {
             SizedBox(height: 10),
             ElevatedButton(
               child: Text('Sign up'),
-              onPressed: () {
-                // Kayıt işlevini burada gerçekleştir
+              onPressed: () async {
+                try {
+                  final user = await _auth.createUserWithEmailAndPassword(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
+                  if (user != null) {
+                    // Kullanıcı başarıyla oluşturuldu, burada ek işlemler yapabilirim
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Bir hata oluştu')),
+                  );
+                }
               },
             ),
             SizedBox(height: 20),
