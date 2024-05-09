@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatelessWidget {
+  final _auth = FirebaseAuth.instance;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +26,7 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -29,6 +34,7 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
@@ -41,14 +47,32 @@ class LoginScreen extends StatelessWidget {
               child: TextButton(
                 child: Text('Forgot Password?'),
                 onPressed: () {
-                  // Şifremi unuttum işlevini burada gerçekleştir
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PasswordReset()),
+                  );
                 },
               ),
             ),
             ElevatedButton(
               child: Text('Log in'),
-              onPressed: () {
-                // Giriş işlevini burada gerçekleştir
+              onPressed: () async {
+                try {
+                  final user = await _auth.signInWithEmailAndPassword(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
+                  if (user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Hatalı giriş')),
+                  );
+                }
               },
             ),
             SizedBox(height: 20),
