@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchBarWidget extends StatefulWidget {
+  const SearchBarWidget({super.key});
+
   @override
   _SearchBarWidgetState createState() => _SearchBarWidgetState();
 }
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
-  final TextEditingController _filter = new TextEditingController();
+  final TextEditingController _filter = TextEditingController();
   Future<QuerySnapshot>? _future; 
 
   _SearchBarWidgetState() {
@@ -19,7 +21,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       } else {
         setState(() {
           _future = FirebaseFirestore.instance
-              .collection('movies')
+              .collection('movieandseries')
               .where('title', isGreaterThanOrEqualTo: _filter.text)
               .get();
         });
@@ -35,7 +37,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             controller: _filter,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               prefixIcon: Icon(Icons.search),
               hintText: 'Ara...',
             ),
@@ -48,14 +50,14 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                   future: _future,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Hata: ${snapshot.error}'));
                     } else {
                       return ListView.builder(
-                        itemCount: snapshot.data?.docs?.length ?? 0,
+                        itemCount: snapshot.data?.docs.length ?? 0,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot? movie = snapshot.data?.docs?[index];
+                          DocumentSnapshot? movie = snapshot.data?.docs[index];
                           return ListTile(
                             title: Text(movie?['title'] ?? ''),
                             subtitle: Text(movie?['description'] ?? ''),
