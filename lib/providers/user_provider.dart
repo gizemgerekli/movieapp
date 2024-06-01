@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class UserProvider with ChangeNotifier {
   String _username = '';
@@ -15,17 +16,16 @@ class UserProvider with ChangeNotifier {
   }
 
 Future<void> fetchUser(String email) async {
-  FirebaseFirestore.instance
-      .collection('users')
-      .where('email', isEqualTo: email)
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-    if (querySnapshot.docs.isNotEmpty) {
-      Map<String, dynamic> data = querySnapshot.docs.first.data() as Map<String, dynamic>;
+  final databaseReference = FirebaseDatabase.instance.ref();
+  // 'users' koleksiyonundan veriyi çek
+  await databaseReference.child('users').orderByChild('email').equalTo(email).once().then((DataSnapshot snapshot) {
+    if (snapshot.value != null) {
+      // Veri bulunduysa kullanıcı bilgilerini ayarla
+      final data = snapshot.value as Map<dynamic, dynamic>;
       setUser(data['username'], data['profileImageUrl']);
     } else {
-      print('No user found with this email');
+      print('Bu e-posta ile ilişkilendirilmiş kullanıcı bulunamadı.');
     }
-  });
+  } as FutureOr Function(DatabaseEvent value));
 }
 }
