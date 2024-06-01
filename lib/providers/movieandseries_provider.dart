@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Movie {
   final String id;
@@ -41,24 +41,28 @@ class Movie {
 }
 
 class MovieAndSeriesProvider with ChangeNotifier {
-  Movie? _selectedMovie; 
+  Movie? _selectedMovie;
 
   Movie? get selectedMovie => _selectedMovie;
 
   void fetchMovie(String movieId) async {
-    // Firebase'den belirli bir filmi çekme kodu
-    FirebaseFirestore.instance
-      .collection('movieandseries')
-      .doc(movieId)
-      .get()
-      .then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-          _selectedMovie = Movie.fromMap(data);  // _selectedMovie'yi günceller
-          notifyListeners();
-        } else {
-          print('No movie found with this ID');
-        }
-      });
+    try {
+      final DatabaseReference movieRef = FirebaseDatabase.instance
+          .ref()
+          .child('movieandseries')
+          .child(movieId);
+
+      final DataSnapshot dataSnapshot = await movieRef.get();
+
+      if (dataSnapshot.exists) {
+        final Map<String, dynamic> data = dataSnapshot.value as Map<String, dynamic>;
+        _selectedMovie = Movie.fromMap(data);
+        notifyListeners();
+      } else {
+        print('No movie found with this ID: $movieId');
+      }
+    } catch (error) {
+      print('Error fetching movie: $error');
+    }
   }
 }
